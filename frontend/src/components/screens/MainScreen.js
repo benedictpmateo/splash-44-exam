@@ -37,7 +37,6 @@ const MainScreen = () => {
         setRounds("");
         break;
     }
-    console.log(data);
   };
 
   const { getRootProps, getRadioProps } = useRadioGroup({

@@ -16,7 +16,6 @@ const WelcomeScreen = () => {
       const { data } = await axios.post(config.apiUrl + '/users', {
         username
       })
-      console.log(data);
       update({
         isMain: true,
         user: data.user,

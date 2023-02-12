@@ -87,7 +87,6 @@ const LobbyScreen = () => {
   };
 
   const onJoinedLobby = (game) => {
-    console.log(game);
     if (game.code === code) {
       setGuessForTheRounds(game.rounds);
       setPlayers(game.players);
@@ -118,7 +117,6 @@ const LobbyScreen = () => {
   };
 
   const onGameStart = (game) => {
-    console.log(game);
     update({
       currentRound: 1,
       currentGame: game,

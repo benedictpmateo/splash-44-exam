@@ -119,7 +119,7 @@ export const leaveGame = async (io, socket) => {
           });
         }
       } catch (error) {
-        console.log("error:leaveGame", error);
+        socket.error('error', 'Something went wrong when trying to leave the game');
       }
     }
   }
@@ -178,7 +178,6 @@ export const startGame = async (io, socket, game) => {
 
 export const setGuessForTheRound = async (io, socket, payload) => {
   const { code, guess, username } = payload;
-  console.log("setGuessForTheRound", { guess, username });
 
   let game = await GameModel.findOne({ code });
 
@@ -202,18 +201,12 @@ export const setGuessForTheRound = async (io, socket, payload) => {
 
   // IF ALL USERS HAVE ALREADY GUESSED
   game = await GameModel.findOne({ code });
-  console.log("setGame", game);
 
   let currentRound = game.history.find(
     ({ round }) => round === game.currentRound
   );
   if (currentRound.players.length >= game.numberOfUser) {
     for (let i = game.numberOfUser; i < 5; i++) {
-      console.log(
-        i,
-        `history.${game.currentRound - 1}.players`,
-        game.players[i].username
-      );
       await GameModel.updateOne(
         { code },
         {
@@ -255,13 +248,11 @@ export const setGuessForTheRound = async (io, socket, payload) => {
     for (let i = 0; i < game.players.length; i++) {
       let updatedCredits = game.players[i].credits;
       let isRoundWon = false;
-      console.log(i, currentRound.players[i]);
       if (currentRound.secretNumber >= currentRound.players[i].guess) {
         updatedCredits += currentRound.players[i].guess * 10;
         isRoundWon = true;
       }
 
-      console.log(isRoundWon, roundIndex, i);
       await GameModel.updateOne(
         {
           code,

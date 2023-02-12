@@ -42,10 +42,6 @@ const Game = ({ socket }) => {
       setPlayers(() => currentGame.players.map((player) => player.username));
     });
 
-    socket.on("message", (msg) => {
-      console.log(msg);
-    });
-
     socket.on("round-wait", () => {
       setWaiting(true);
     });
@@ -128,7 +124,6 @@ const Game = ({ socket }) => {
     });
 
     socket.on("update-user", ({ user }) => {
-      console.log(user);
       update({
         user,
       });
@@ -137,11 +132,6 @@ const Game = ({ socket }) => {
       update({
         currentGame: game,
       });
-    });
-
-    socket.on("game-over", async (payload) => {
-      const { game: $game } = payload;
-      console.log("game over", $game);
     });
 
     socket.on('leave-lobby', ({ code, username }) => {
@@ -167,7 +157,6 @@ const Game = ({ socket }) => {
       parseFloat(value) > -1 &&
       10 > parseFloat(value)
     ) {
-      console.log("on guess", { code, guess: parseFloat(value), username });
       socket.emit("submit-guess", { code, guess: parseFloat(value), username });
     }
   };
