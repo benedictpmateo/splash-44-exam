@@ -10,6 +10,8 @@ import {
 import { useEffect, useState } from "react";
 import ContainerLayout from "../layout/ContainerLayout";
 import PageLayout from "../layout/PageLayout";
+
+// Import BarGraph dynamically to avoid ssr rendering
 import dynamic from "next/dynamic";
 const BarGraph = dynamic(import("@/components/graph/Graph"), {
   ssr: false,
@@ -24,16 +26,21 @@ const timeout = async (seconds) => {
 };
 
 const Game = ({ socket }) => {
+  // GAME CONTEXT
   const { game, update } = useGameContext();
   const { currentGame, currentRound, user } = game;
   const { username } = user;
-  const { code, rounds, players } = currentGame;
+  const { code } = currentGame;
+
+  // States
   const [waiting, setWaiting] = useState(false);
   const [secretGuess, setSecretGuess] = useState(0);
   const [showResult, setShowResult] = useState(false);
   const [_data, setData] = useState([0, 0, 0, 0, 0]);
   const [_players, setPlayers] = useState(['--', '--', '--', '--', '--']);
   const [guess, setGuess] = useState(0);
+
+  // Hooks
   const toast = useToast();
 
   useEffect(() => {
@@ -42,12 +49,16 @@ const Game = ({ socket }) => {
       setPlayers(() => currentGame.players.map((player) => player.username));
     });
 
+    // Wait till everyone have guessed a number
     socket.on("round-wait", () => {
       setWaiting(true);
     });
 
+    // Execute the game
     socket.on("round-play", async (payload) => {
       const { game: $game, currentRound, gameOver } = payload;
+
+      // Resets the input guess
       setGuess("");
 
       const item = currentRound.players.find(
@@ -56,11 +67,14 @@ const Game = ({ socket }) => {
       console.log(currentRound, item);
       setWaiting(true);
 
+      // Update status to Round Start
       update({
         status: GAME_STATUS.ROUND_START,
       });
+      // Wait for 2 seconds
       await timeout(2000);
 
+      // Play the animation
       setShowResult(true);
       setSecretGuess(currentRound.secretNumber);
       setData(() =>
@@ -72,8 +86,11 @@ const Game = ({ socket }) => {
         })
       );
       setPlayers(() => $game.players.map((player) => player.username));
+
+      // Buffer of 2.5 seconds before showing the toast message
       await timeout(2500);
 
+      // Show toast message if user won or lose the round
       if (item.won) {
         toast({
           status: "success",
@@ -93,18 +110,21 @@ const Game = ({ socket }) => {
         status: GAME_STATUS.ROUND_OVER,
       });
 
-      // RESET
+
+      // Reset Round
       setWaiting(false);
       update({
         currentGame: $game,
         currentRound: $game.currentRound,
       });
 
+      // Wait for 10 seconds
       await timeout(10000);
       setSecretGuess(0);
       setShowResult(false);
       setData([0, 0, 0, 0, 0]);
 
+      // Checks if game is over
       if (gameOver) {
         toast({
           status: "info",

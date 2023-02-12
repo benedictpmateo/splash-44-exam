@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 
+// custom hook to use requestAnimationFrame
 export const useIteration = (incr = 0.1) => {
   const [i, setI] = React.useState(0);
 

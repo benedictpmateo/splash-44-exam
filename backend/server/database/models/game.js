@@ -15,6 +15,7 @@ const schema = new Schema(
       isHost: Boolean,
       id: Number,
     }],
+    // Game history
     history: [{
       round: Number,
       secretNumber: Number,

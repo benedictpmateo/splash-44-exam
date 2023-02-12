@@ -18,15 +18,18 @@ import PageLayout from "../layout/PageLayout";
 
 var socket;
 const LobbyScreen = () => {
+  // Game Context
   const { game, update } = useGameContext();
-
   const { code, type, rounds } = game.lobbyConfig;
   const user = game?.user;
   const { username } = user;
-
   const isHost = type == "create";
+
+  // States
   const [players, setPlayers] = useState([]);
   const [gameRounds, setGuessForTheRounds] = useState(0);
+
+  // Hooks
   const toast = useToast();
 
   useEffect(() => {

@@ -11,12 +11,14 @@ export const GAME_STATUS = {
 };
 
 const initialState = {
-  user: null,
-  status: GAME_STATUS.LOBBY,
-  currentRound: 1,
-  currentGame: null,
+  user: null, // current user
+  status: GAME_STATUS.LOBBY, // used to change screens
+  currentRound: 1, // current game round
+  currentGame: null, // current game object
   isMain: false,
   isLobby: false,
+
+  // Game Lobby Config
   lobbyConfig: {
     user: null,
     code: '',
@@ -33,6 +35,7 @@ const GameContext = createContext({
 const GameProvider = ({ children }) => {
   const [game, setGame] = useState(initialState);
 
+  // Use to update any value in the state object
   const update = (payload) => {
     setGame((value) =>
       immutability(value, {

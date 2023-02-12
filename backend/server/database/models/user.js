@@ -4,12 +4,6 @@ const schema = new Schema(
   {
     credits: Number,
     username: String,
-    gameHistory: [
-      {
-        code: String,
-        lastCredit: String,
-      },
-    ],
   },
   {
     timestamps: true,

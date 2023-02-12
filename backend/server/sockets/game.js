@@ -181,6 +181,14 @@ export const startGame = async (io, socket, game) => {
   }
 };
 
+/**
+ * Guess a number for the round
+ * @description Callback listener for when the user guess a number
+ * @param {*} io
+ * @param {*} socket
+ * @param {*} payload
+ * @returns
+ */
 export const setGuessForTheRound = async (io, socket, payload) => {
   const { code, guess, username } = payload;
 
@@ -204,7 +212,7 @@ export const setGuessForTheRound = async (io, socket, payload) => {
     }
   );
 
-  // IF ALL USERS HAVE ALREADY GUESSED
+  // IF ALL USERS HAVE ALREADY GUESSED ADD COMPUTER GUESS
   game = await GameModel.findOne({ code });
 
   let currentRound = game.history.find(
@@ -212,6 +220,7 @@ export const setGuessForTheRound = async (io, socket, payload) => {
   );
   if (currentRound.players.length >= game.numberOfUser) {
     for (let i = game.numberOfUser; i < 5; i++) {
+      // Add the  uess of the Computer Player
       await GameModel.updateOne(
         { code },
         {
@@ -232,6 +241,8 @@ export const setGuessForTheRound = async (io, socket, payload) => {
     const roundIndex = game.history.findIndex(
       ({ round }) => round === game.currentRound
     );
+
+    // Deduct 10 credits to all players
     for (let i = 0; i < game.players.length; i++) {
       let updatedCredits = game.players[i].credits - DEDUCTION;
       await GameModel.updateOne(
@@ -246,7 +257,9 @@ export const setGuessForTheRound = async (io, socket, payload) => {
       );
     }
     game = await GameModel.findOne({ code });
+    // Send a message to all players in the current game for the deduction
     io.in(code).emit("message", "10 credits is deducted to your account");
+    // Update game object in frontend
     io.in(code).emit('update-game', { game })
 
 
@@ -257,7 +270,7 @@ export const setGuessForTheRound = async (io, socket, payload) => {
         updatedCredits += currentRound.players[i].guess * 10;
         isRoundWon = true;
       }
-
+      // Checks if player gets rewards or not then update the players credits
       await GameModel.updateOne(
         {
           code,
@@ -274,6 +287,8 @@ export const setGuessForTheRound = async (io, socket, payload) => {
     currentRound = game.history.find(
       ({ round }) => round === game.currentRound
     );
+
+    // If there's a next round create. Prepare the next round.
     if (game.rounds > game.currentRound) {
       await GameModel.updateOne(
         { code },
@@ -289,6 +304,7 @@ export const setGuessForTheRound = async (io, socket, payload) => {
       );
       game = await GameModel.findOne({ code });
 
+      // Continue to next round
       io.in(code).emit("round-play", { game, currentRound, gameOver: false });
     } else {
       for (let i = 0; i < game.players.length; i++) {
@@ -302,13 +318,22 @@ export const setGuessForTheRound = async (io, socket, payload) => {
           );
         }
       }
+
+      // Game ended says thanks for playing
       io.in(code).emit("round-play", { game, currentRound, gameOver: true });
     }
   } else {
+    // Wait till all human player guessed a number
     socket.emit("round-wait", { waiting: true });
   }
 };
 
+/**
+ * Player leaves lobby
+ * @param {*} io
+ * @param {*} socket
+ * @param {*} param2
+ */
 export const onLeaveLobby = async (io, socket, { code, username }) => {
   const user = await UserModel.findOne({ username });
 

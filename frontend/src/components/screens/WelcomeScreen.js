@@ -7,7 +7,10 @@ import axios from 'axios'
 import { config } from "@/utils/config";
 
 const WelcomeScreen = () => {
+  // Game Context
   const { update } = useGameContext();
+
+  // States
   const [username, setUsername] = useState('');
 
   const onJoinGame = async () => {

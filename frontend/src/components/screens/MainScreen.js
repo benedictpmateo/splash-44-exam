@@ -23,7 +23,10 @@ const LOBBY_CONFIG = {
 const LOBBY_OPTIONS = Object.values(LOBBY_CONFIG);
 
 const MainScreen = () => {
+  // Game Context
   const { game, update } = useGameContext();
+
+  // States
   const [lobby, setLobby] = useState(LOBBY_CONFIG.CREATE);
   const [rounds, setRounds] = useState();
   const [code, setCode] = useState();
@@ -39,6 +42,7 @@ const MainScreen = () => {
     }
   };
 
+  // Used for the custom Radio Button for Lobby Config
   const { getRootProps, getRadioProps } = useRadioGroup({
     name: "LobbyConfig",
     defaultValue: LOBBY_CONFIG.CREATE,
@@ -47,10 +51,12 @@ const MainScreen = () => {
   const group = getRootProps();
 
   const onStartGame = () => {
+    // All conditions are just simple form validations
     if (game.user.username) {
       let lobbyCode;
       if (lobby === LOBBY_CONFIG.CODE && code && code.length === 6) {
         lobbyCode = String(code).toLocaleUpperCase();
+        // Means the user joined is a joiner
         update({
           isLobby: true,
           lobbyConfig: {
@@ -63,6 +69,7 @@ const MainScreen = () => {
         Number.isInteger(parseInt(rounds)) &&
         rounds <= 10
       ) {
+        // Means the user joined is a host
         lobbyCode = generateCode();
         update({
           isLobby: true,

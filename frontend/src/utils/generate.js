@@ -1,3 +1,4 @@
+// Generate Lobby Code
 export const generateCode = () => {
   const length = 6;
   let result = '';

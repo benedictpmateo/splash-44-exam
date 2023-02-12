@@ -6,6 +6,7 @@ import { useIteration } from "@/hooks/useIteration";
 const width = 500;
 const height = 500;
 
+// GRAPH POSITION AND CONFIGS
 const positionX = 50;
 const positionY = 450;
 const paddingL = 20;
