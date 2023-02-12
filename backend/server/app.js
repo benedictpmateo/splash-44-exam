@@ -12,6 +12,7 @@ export const corsOptions = {
   origin: function (origin, callback) {
     var whitelist = [
       "http://localhost:3000",
+      "https://splash-44-exam.vercel.app",
     ];
     if (whitelist.indexOf(origin) !== -1) {
       callback(null, true);
