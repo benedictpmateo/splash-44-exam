@@ -135,6 +135,7 @@ export const leaveGame = async (io, socket) => {
  */
 export const startGame = async (io, socket, game) => {
   const { code, rounds } = game;
+  console.log('gogoo');
 
   try {
     const game = await GameModel.findOne({ code });
@@ -153,6 +154,8 @@ export const startGame = async (io, socket, game) => {
         username: "Computer#" + Number(game.players.length + index + 1),
       }));
 
+    console.log('something went wrong', 'whatup');
+
     await GameModel.updateOne(
       { code },
       {
@@ -170,8 +173,10 @@ export const startGame = async (io, socket, game) => {
     );
     const start = await GameModel.findOne({ code });
 
+    console.log('something went wrong', start);
     io.in(game.code).emit("game-start", start);
   } catch (error) {
+    console.log(error);
     io.in(game.code).emit("error", "Something went wrong");
   }
 };

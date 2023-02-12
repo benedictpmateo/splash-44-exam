@@ -4,9 +4,9 @@
   "private": true,
   "scripts": {
     "start": "npm run prod",
+    "dev:watch": "nodemon",
     "dev": "NODE_ENV=development npm-run-all build server",
     "prod": "NODE_ENV=production npm-run-all build server",
-    "watch:dev": "nodemon",
     "server": "node ./server/bin/www.js",
     "transpile": "babel ./server --out-dir dist-server",
     "clean": "rimraf dist-server",
