@@ -34,6 +34,7 @@ const LobbyScreen = () => {
       auth: {
         username,
       },
+      retries: 20,
     });
     socket.on("connect", onConnect);
     socket.on("disconnect", onDisconnect);
