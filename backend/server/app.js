@@ -22,6 +22,8 @@ export const corsOptions = {
   },
 };
 
+app.use("/", indexRouter);
+
 app.use(cors(corsOptions))
 app.use(logger("dev"));
 app.use(express.json());
@@ -30,7 +32,6 @@ app.use(cookieParser());
 
 app.use(express.static(path.join(path.dirname("public"))));
 
-app.use("/", indexRouter);
 app.use("/users", usersRouter);
 
 export default app;
